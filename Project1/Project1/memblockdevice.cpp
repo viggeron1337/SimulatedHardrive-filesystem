@@ -39,35 +39,38 @@ int MemBlockDevice::spaceLeft() const {
     return 0;
 }
 
-int MemBlockDevice::writeBlock(int blockNr, const std::vector<char> &vec) {
+int MemBlockDevice::writeFile(const std::string &strBlock) {
     int output = -1;    // Assume blockNr out-of-range
+	float nrOfBlocksF = strBlock.size() / 510; 
+	int nrOfBlocksI = nrOfBlocksF; 
+	
+	if (nrOfBlocksF != nrOfBlocksI)
+	{
+		nrOfBlocksI++;
+	}
+	int* blockNeededArray = new int[nrOfBlocksI]; 
+	int foundBlocks = 0; 
 
-    if (blockNr < this->nrOfBlocks && blockNr >= 0) {
-        /* -2 = vec and block dont have same dimensions */
-        /* 1 = success */
-        output = this->memBlocks[blockNr].writeBlock(vec);
-    }
-    return output;
-}
-
-int MemBlockDevice::writeBlock(int blockNr, const std::string &strBlock) {
-    int output = -1;    // Assume blockNr out-of-range
-
-    if (blockNr < this->nrOfBlocks && blockNr >= 0) {
-        /* -2 = str-length and block dont have same dimensions */
-        /* 1 = success */
-        output = this->memBlocks[blockNr].writeBlock(strBlock);
-    }
-    return output;
-}
-
-int MemBlockDevice::writeBlock(int blockNr, const char cArr[]) {
-    int output = -1;    // Assume blockNr out-of-range
-    if (blockNr < this->nrOfBlocks && blockNr >= 0) {
-        output = 1;
-        // Underlying function writeBlock cannot check array-dimension.
-        this->memBlocks[blockNr].writeBlock(cArr);
-    }
+	for (int i = 0; i < this->nrOfBlocks && foundBlocks < nrOfBlocksI; i++)
+	{
+		//Inserts any data to be stored onto the first empty block. 
+		if (this->memBlocks[i].getCharAt(0) == '0')
+		{
+			blockNeededArray[foundBlocks++] = i;
+		}
+	}
+	//Makes sure that we add the data if there was blocks to support it. 
+	if (foundBlocks == nrOfBlocksI)
+	{
+		output = 1; 
+		for (int i = 0; i < nrOfBlocksI - 1; i++)
+		{
+			this->memBlocks[blockNeededArray[i]].writeBlock(strBlock.substr(510 * i, 510),'1',blockNeededArray[i + 1]); 
+		}
+		//This makes sure that the last char is -1 (standard value) for the last block. 
+		this->memBlocks[blockNeededArray[nrOfBlocksI]].writeBlock(strBlock.substr(510 * nrOfBlocksI, 510), '1'); 
+	}
+	delete[] blockNeededArray; 
     return output;
 }
 

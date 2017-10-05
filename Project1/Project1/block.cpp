@@ -57,16 +57,17 @@ Block Block::readBlock() const {
     return Block(*this);
 }
 
-int Block::writeBlock(const std::string &strBlock) {
-    int output = -2;    // Assume out of range
-    if (strBlock.size() == (unsigned long)this->nrOfElements) {
-        for (int i = 0; i < this->nrOfElements; ++i) {
+char Block::getCharAt(int pos)
+{
+	return this->block[pos]; 
+}
+
+void Block::writeBlock(const std::string &strBlock,char blockType, int continueBlock) {
+	this->block[0] = blockType; 
+       for (int i = 1; i < this->nrOfElements - 1; ++i) {
             this->block[i] = strBlock[i];
         }
-        output = 1;
-    }
-
-    return output;
+	   this->block[511] = continueBlock; 
 }
 
 int Block::writeBlock(const std::vector<char> &vec) {

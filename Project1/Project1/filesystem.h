@@ -8,18 +8,19 @@ class FileSystem
 private:
     MemBlockDevice VHDD;
 	int pos;
+	
+	void format();
     // Here you can add your own data structures
 public:
     FileSystem();
     ~FileSystem();
-
-	void formant();
     /* These API functions need to be implemented
 	   You are free to specify parameter lists and return values
     */
 
     /* This function creates a file in the filesystem */
     // createFile(...)
+	void createFile(std::string& writeString);
 
     /* Creates a folder in the filesystem */
     // createFolder(...);

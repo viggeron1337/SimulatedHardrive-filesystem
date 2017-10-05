@@ -18,9 +18,7 @@ public:
     int spaceLeft() const;
 
     /* Writes a block */
-    int writeBlock(int blockNr, const std::vector<char> &vec);
-    int writeBlock(int blockNr, const std::string &strBlock);
-    int writeBlock(int blockNr, const char cArr[]);     // Use with care, make sure that cArr has at least the same dimension as block
+	int writeFile(const std::string &strBlock);
 
     /* Reads a block */
     Block readBlock(int blockNr) const;

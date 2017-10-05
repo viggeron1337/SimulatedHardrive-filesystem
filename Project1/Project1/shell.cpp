@@ -4,6 +4,7 @@
 
 const int MAXCOMMANDS = 8;
 const int NUMAVAILABLECOMMANDS = 15;
+FileSystem* fileSystem;
 
 std::string availableCommands[NUMAVAILABLECOMMANDS] = {
     "quit","format","ls","create","cat","createImage","restoreImage",
@@ -13,8 +14,9 @@ std::string availableCommands[NUMAVAILABLECOMMANDS] = {
 /* Takes usercommand from input and returns number of commands, commands are stored in strArr[] */
 int parseCommandString(const std::string &userCommand, std::string strArr[]);
 int findCommand(std::string &command);
-bool quit();
+bool quit(); 
 std::string help();
+void format(); 
 
 /* More functions ... */
 
@@ -40,6 +42,7 @@ int main(void) {
 				bRun = quit();                
                 break;
             case 1: // format
+				format(); 
                 break;
             case 2: // ls
                 std::cout << "Listing directory" << std::endl;
@@ -74,7 +77,6 @@ int main(void) {
             }
         }
     } while (bRun == true);
-
     return 0;
 }
 
@@ -125,6 +127,10 @@ std::string help() {
     helpStr += "* pwd:                              Get current working directory\n";
     helpStr += "* help:                             Prints this help screen\n";
     return helpStr;
+}
+void format()
+{
+	fileSystem = new FileSystem(); 
 }
 
 /* Insert code for your shell functions and call them from the switch-case */
