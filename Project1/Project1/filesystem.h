@@ -6,7 +6,8 @@
 class FileSystem
 {
 private:
-    MemBlockDevice mMemblockDevice;
+    MemBlockDevice VHDD;
+	int pos;
     // Here you can add your own data structures
 public:
     FileSystem();
@@ -21,7 +22,7 @@ public:
     // createFile(...)
 
     /* Creates a folder in the filesystem */
-    // createFolderi(...);
+    // createFolder(...);
 
     /* Removes a file in the filesystem */
     // removeFile(...);
