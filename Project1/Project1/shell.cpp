@@ -17,6 +17,8 @@ int findCommand(std::string &command);
 bool quit(); 
 std::string help();
 void format(); 
+void listDirectory();
+void append(); 
 
 /* More functions ... */
 
@@ -43,9 +45,11 @@ int main(void) {
                 break;
             case 1: // format
 				format(); 
+				currentDir = "/.";
                 break;
             case 2: // ls
                 std::cout << "Listing directory" << std::endl;
+				listDirectory(); 
                 break;
             case 3: // create
                 break;
@@ -60,12 +64,14 @@ int main(void) {
             case 8: // cp
                 break;
             case 9: // append
+				append(); 
                 break;
             case 10: // mv
                 break;
             case 11: // mkdir
                 break;
             case 12: // cd
+
                 break;
             case 13: // pwd
                 break;
@@ -131,6 +137,12 @@ std::string help() {
 void format()
 {
 	fileSystem = new FileSystem(); 
+}
+
+void listDirectory()
+{
+	std::string output = fileSystem->listDirectory();
+	std::cout << output << std::endl;
 }
 
 /* Insert code for your shell functions and call them from the switch-case */

@@ -20,6 +20,7 @@ public:
     virtual ~BlockDevice();
     virtual int spaceLeft() const = 0;
     virtual int writeFile(const std::string &strBlock) = 0;
+	virtual int createDirectory() = 0; 
     virtual Block readBlock(int blockNr) const = 0;
     virtual void reset() = 0;
     virtual int size() const = 0;

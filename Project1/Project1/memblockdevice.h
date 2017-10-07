@@ -4,6 +4,8 @@
 
 class MemBlockDevice: public BlockDevice
 {
+private:
+	int nrOfDirectories = 0;
 public:
     MemBlockDevice(int nrOfBlocks = 250);
     MemBlockDevice(const MemBlockDevice &other);
@@ -17,8 +19,11 @@ public:
     /* Returns amount of free blocks */
     int spaceLeft() const;
 
-    /* Writes a block */
+    /* Writes a file */
 	int writeFile(const std::string &strBlock);
+
+	/* Writes a directory */
+	int createDirectory(); 
 
     /* Reads a block */
     Block readBlock(int blockNr) const;

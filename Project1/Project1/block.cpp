@@ -45,7 +45,8 @@ char Block::operator[](int index) const {
 }
 
 void Block::reset(char c) {
-    for (int i = 0; i < this->nrOfElements; ++i)
+	this->block[0] = 0; 
+    for (int i = 1; i < this->nrOfElements; ++i)
         this->block[i] = c;
 }
 
@@ -64,8 +65,8 @@ char Block::getCharAt(int pos)
 
 void Block::writeBlock(const std::string &strBlock,char blockType, int continueBlock) {
 	this->block[0] = blockType; 
-       for (int i = 1; i < this->nrOfElements - 1; ++i) {
-            this->block[i] = strBlock[i];
+       for (int i = 0; i < strBlock.size(); i++) {
+            this->block[i + 1] = strBlock[i];
         }
 	   this->block[511] = continueBlock; 
 }

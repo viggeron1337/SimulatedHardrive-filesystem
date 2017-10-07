@@ -29,7 +29,7 @@ public:
         return os;
     }
 
-    void reset(char c = 0);  // Sets every element in char-array to 0
+	void reset(char c = ':');  // Sets every element in char-array to 0
     int size() const;   // returns the size
     Block readBlock() const;    // Returns a copy of block
 	char getCharAt(int pos); 

@@ -40,7 +40,7 @@ int MemBlockDevice::spaceLeft() const {
 }
 
 int MemBlockDevice::writeFile(const std::string &strBlock) {
-    int output = -1;    // Assume blockNr out-of-range
+    int blockNr = -1;    // Assume blockNr out-of-range
 	float nrOfBlocksF = strBlock.size() / 510; 
 	int nrOfBlocksI = nrOfBlocksF; 
 	
@@ -62,7 +62,7 @@ int MemBlockDevice::writeFile(const std::string &strBlock) {
 	//Makes sure that we add the data if there was blocks to support it. 
 	if (foundBlocks == nrOfBlocksI)
 	{
-		output = 1; 
+		blockNr = blockNeededArray[0]; 
 		for (int i = 0; i < nrOfBlocksI - 1; i++)
 		{
 			this->memBlocks[blockNeededArray[i]].writeBlock(strBlock.substr(510 * i, 510),'1',blockNeededArray[i + 1]); 
@@ -71,7 +71,21 @@ int MemBlockDevice::writeFile(const std::string &strBlock) {
 		this->memBlocks[blockNeededArray[nrOfBlocksI]].writeBlock(strBlock.substr(510 * nrOfBlocksI, 510), '1'); 
 	}
 	delete[] blockNeededArray; 
-    return output;
+    return blockNr;
+}
+
+int MemBlockDevice::createDirectory()
+{
+	int emptyPos = -1; 
+	for (int i = 0; i < this->nrOfBlocks && emptyPos == -1; i++)
+	{
+		if (this->memBlocks[i].getCharAt(0) == '0')
+		{
+			this->memBlocks[i].writeBlock("", '2');
+			emptyPos = i; 
+		}
+	}
+	return emptyPos; 
 }
 
 Block MemBlockDevice::readBlock(int blockNr) const {
