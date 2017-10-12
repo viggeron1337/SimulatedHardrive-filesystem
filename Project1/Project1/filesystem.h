@@ -14,7 +14,7 @@ private:
 public:
     FileSystem();
     ~FileSystem();
-	std::string& listDirectory(); 
+	std::string listDirectory(); 
 	void append(std::string& appendInfo, int blockNr = -1); 
     /* These API functions need to be implemented
 	   You are free to specify parameter lists and return values

@@ -145,4 +145,8 @@ void listDirectory()
 	std::cout << output << std::endl;
 }
 
+void append()
+{
+
+}
 /* Insert code for your shell functions and call them from the switch-case */

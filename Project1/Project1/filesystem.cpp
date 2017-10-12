@@ -9,25 +9,29 @@ FileSystem::~FileSystem()
 {
 }
 
-std::string & FileSystem::listDirectory()
+std::string  FileSystem::listDirectory()
 {
 	std::string blockInfo;
 	Block tempBlock = VHDD.readBlock(this->currentBlock);
 	char continueBlock = '0'; 
-	while (continueBlock != '-1')
+	while (continueBlock != ':')
 	{
 		for (int i = 1; i < 511; i++)
 		{
 			blockInfo += tempBlock.getCharAt(i);
+			if (i >= 2 && blockInfo.at(i - 1) == ':' && blockInfo.at(i - 2) == ':')
+			{
+				i = 511;
+			}
 		}
 		continueBlock = tempBlock.getCharAt(511); 
-		if (continueBlock != '-1')
+		if (continueBlock != ':')
 		{
 			tempBlock = VHDD.readBlock(continueBlock); 
 		}
 	}
 
-	std::string cleanBlockInfo = ""; 
+	std::string cleanBlockInfo; 
 	for (int i = 0; i < blockInfo.size(); i++)
 	{
 		if (blockInfo.at(i) != ':')
@@ -36,7 +40,7 @@ std::string & FileSystem::listDirectory()
 		}
 		else
 		{
-			cleanBlockInfo += "/n"; 
+			cleanBlockInfo += "\n"; 
 			i++; 
 		}
 	}
@@ -54,7 +58,7 @@ void FileSystem::append(std::string & appendInfo, int blockNr)
 	std::string blockInfo; 
 	char continueBlock = blockNr;
 
-	while (continueBlock != '-1')
+	while (continueBlock != ':')
 	{
 		for (int i = 1; i < 511; i++)
 		{
@@ -63,13 +67,12 @@ void FileSystem::append(std::string & appendInfo, int blockNr)
 		VHDD[continueBlock].reset(); 
 		continueBlock = tempBlock.getCharAt(511);
 		
-		if (continueBlock != '-1')
+		if (continueBlock != ':')
 		{
 			tempBlock = VHDD.readBlock(continueBlock);
 		}
 	}
 	blockInfo += appendInfo;
-	if()
 }
 
 void FileSystem::format() 

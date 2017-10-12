@@ -9,7 +9,7 @@ Block::Block(int size) {
     else
         this->nrOfElements = 512;
 
-    this->block = new char[this->nrOfElements];
+    this->info = new char[this->nrOfElements];
 
     // Sets everything to 0
     this->reset();
@@ -17,21 +17,21 @@ Block::Block(int size) {
 
 Block::Block(const Block &other) {
     this->nrOfElements = other.nrOfElements;
-    this->block = new char[this->nrOfElements];
+    this->info = new char[this->nrOfElements];
     for (int i = 0; i < this->nrOfElements; ++i)
-        this->block[i] = other.block[i];
+        this->info[i] = other.info[i];
 }
 
 Block::~Block() {
-    delete [] this->block;
+    delete [] this->info;
 }
 
 Block &Block::operator =(const Block &other) {
-    delete [] this->block;
+    delete [] this->info;
     this->nrOfElements = other.nrOfElements;
-    this->block = new char[this->nrOfElements];
+    this->info = new char[this->nrOfElements];
     for (int i = 0; i < this->nrOfElements; ++i)
-        this->block[i] = other.block[i];
+        this->info[i] = other.info[i];
     return *this;
 }
 
@@ -40,14 +40,16 @@ char Block::operator[](int index) const {
         throw std::out_of_range("Illegal access\n");
     }
     else {
-        return this->block[index];
+        return this->info[index];
     }
 }
 
-void Block::reset(char c) {
-	this->block[0] = 0; 
-    for (int i = 1; i < this->nrOfElements; ++i)
-        this->block[i] = c;
+void Block::reset() {
+	this->info[0] = '0';
+	for (int i = 1; i < this->nrOfElements; ++i)
+	{
+		this->info[i] = ':';
+	}
 }
 
 int Block::size() const {
@@ -60,22 +62,22 @@ Block Block::readBlock() const {
 
 char Block::getCharAt(int pos)
 {
-	return this->block[pos]; 
+	return this->info[pos];
 }
 
-void Block::writeBlock(const std::string &strBlock,char blockType, int continueBlock) {
-	this->block[0] = blockType; 
+void Block::writeBlock(const std::string &strBlock,char blockType, char continueBlock) {
+	this->info[0] = blockType;
        for (int i = 0; i < strBlock.size(); i++) {
-            this->block[i + 1] = strBlock[i];
+            this->info[i + 1] = strBlock[i];
         }
-	   this->block[511] = continueBlock; 
+	   this->info[511] = continueBlock;
 }
 
 int Block::writeBlock(const std::vector<char> &vec) {
     int output = -2; // Assume not the same dimension
     if (vec.size() == (unsigned long)this->nrOfElements) {
         for (unsigned long int i = 0; i < vec.size(); ++i) {
-           this->block[i] = vec[i];
+           this->info[i] = vec[i];
         }
         output = 1;
     }
@@ -87,7 +89,7 @@ int Block::writeBlock(const std::vector<char> &vec) {
 
 void Block::writeBlock(const char cArr[]) {
     for (int i = 0; i < this->nrOfElements; ++i) {
-        this->block[i] = cArr[i];
+        this->info[i] = cArr[i];
     }
 }
 
@@ -95,7 +97,7 @@ std::string Block::toString() const {
     std::string output;
     output.reserve(this->nrOfElements);
     for (int i = 0; i < this->nrOfElements; ++i)
-        output += this->block[i];
+        output += this->info[i];
     return output;
 }
 

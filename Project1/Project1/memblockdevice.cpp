@@ -89,8 +89,10 @@ int MemBlockDevice::createDirectory()
 }
 
 Block MemBlockDevice::readBlock(int blockNr) const {
-    if (blockNr < 0 || blockNr >= this->nrOfBlocks)
-        throw std::out_of_range("Block out of range");
+	if (blockNr < 0 || blockNr >= this->nrOfBlocks)
+	{
+		//throw std::out_of_range("Block out of range");
+	}
     else {
         Block a(this->memBlocks[blockNr]);
         return a;
@@ -100,7 +102,7 @@ Block MemBlockDevice::readBlock(int blockNr) const {
 /* Resets all the blocks */
 void MemBlockDevice::reset() {
     for (int i = 0; i < this->nrOfBlocks; ++i) {
-        this->memBlocks[i].reset('0');
+        this->memBlocks[i].reset();
     }
 }
 
