@@ -19,6 +19,7 @@ std::string help();
 void format(); 
 void listDirectory();
 void append(); 
+void mkdir();
 
 /* More functions ... */
 
@@ -69,6 +70,7 @@ int main(void) {
             case 10: // mv
                 break;
             case 11: // mkdir
+				mkdir();
                 break;
             case 12: // cd
 
@@ -148,5 +150,13 @@ void listDirectory()
 void append()
 {
 
+} 
+
+void mkdir()
+{
+	std::string name = "test";
+	//get Name
+	fileSystem->createFolder(name);
 }
+
 /* Insert code for your shell functions and call them from the switch-case */

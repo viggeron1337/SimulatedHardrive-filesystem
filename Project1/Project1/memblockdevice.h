@@ -6,6 +6,7 @@ class MemBlockDevice: public BlockDevice
 {
 private:
 	int nrOfDirectories = 0;
+	void appendDirectory(std::string &appendIfon, int appendedBlock);
 public:
     MemBlockDevice(int nrOfBlocks = 250);
     MemBlockDevice(const MemBlockDevice &other);
@@ -33,6 +34,8 @@ public:
 
     /* Return the size */
     int size() const;
+
+	void append(int appendedBlock, std::string &appendIfon);
 };
 
 #endif // MEMBLOCKDEVICE_H
