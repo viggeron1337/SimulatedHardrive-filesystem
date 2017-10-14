@@ -105,7 +105,7 @@ void FileSystem::createFile(const std::string& strName, std::string& writeString
 	if (blockNr != -1)
 	{
 		std::string fileInfo = strName + ":" + std::to_string(blockNr);
-		//Append created blockinfo to current Block (Directory).
+		append(fileInfo, currentBlock);
 	}
 }
 

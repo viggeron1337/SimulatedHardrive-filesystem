@@ -64,6 +64,7 @@ int MemBlockDevice::writeFile(const std::string &strBlock) {
 	if (nrOfBlocksI == 1)
 	{
 		this->memBlocks[blockNeededArray[0]].writeBlock(strBlock, '1');
+		blockNr = blockNeededArray[0];
 	}
 	else
 	{

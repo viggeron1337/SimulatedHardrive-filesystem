@@ -20,6 +20,7 @@ void format();
 void listDirectory();
 void append(); 
 void mkdir();
+void createFile();
 
 /* More functions ... */
 
@@ -53,6 +54,7 @@ int main(void) {
 				listDirectory(); 
                 break;
             case 3: // create
+				createFile();
                 break;
             case 4: // cat
                 break;
@@ -154,9 +156,17 @@ void append()
 
 void mkdir()
 {
-	std::string name = "test";
+	std::string name = "test folder";
 	//get Name
 	fileSystem->createFolder(name);
 }
 
+void createFile()
+{
+	std::string name = "test folder";
+	//get Name
+	std::string content = "test folder test folder test folder ajajskdksfjasfasölfahsökfjsalfaölsfjölsafjölasfjasölfjsaölfsajfsaölfjsaöfjsöfjslföjöljsfölasfjölsajfö";
+	//get content
+	fileSystem->createFile(name, content);
+}
 /* Insert code for your shell functions and call them from the switch-case */
