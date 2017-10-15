@@ -104,4 +104,30 @@ void FileSystem::createFolder(const std::string &strName)
 	}
 }
 
+std::string FileSystem::goToFolder(std::string folderName)
+{
+	std::string tempName = ""; 
+	for (int i = 0; i < this->VHDD[currentBlock].size; i++)
+	{
+		if (this->VHDD[currentBlock].getCharAt(i) != ':')
+		{
+			tempName += this->VHDD[currentBlock].getCharAt(i);
+		}
+		else
+		{
+			if (tempName == folderName)
+			{
+				currentBlock = this->VHDD[currentBlock].getCharAt(i + 1); 
+				i == this->VHDD[currentBlock].size; 
+			}
+			else
+			{
+				tempName.clear(); 
+				i++; 
+			}
+		}
+	}
+	return tempName; 
+}
+
 /* Please insert your code */

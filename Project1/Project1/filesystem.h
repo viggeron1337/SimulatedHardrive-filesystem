@@ -36,6 +36,7 @@ public:
 
     /* Function will move the current location to a specified location in the filesystem */
     // goToFolder(...);
+	std::string goToFolder(std::string folderName); 
 
     /* This function will get all the files and folders in the specified folder */
 

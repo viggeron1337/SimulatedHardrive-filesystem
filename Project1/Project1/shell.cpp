@@ -19,6 +19,9 @@ std::string help();
 void format(); 
 void listDirectory();
 void append(); 
+void create(std::string filePath); 
+void mkdir(std::string filePath); 
+std::string changeDirectory(std::string fileName); 
 
 /* More functions ... */
 
@@ -27,6 +30,7 @@ int main(void) {
 	std::string userCommand, commandArr[MAXCOMMANDS];
 	std::string user = "user@DV1492";    // Change this if you want another user to be displayed
 	std::string currentDir = "/";    // current directory, used for output
+	std::string filePath = ""; 
 
     bool bRun = true;
 
@@ -45,13 +49,14 @@ int main(void) {
                 break;
             case 1: // format
 				format(); 
-				currentDir = "/.";
+				currentDir += "/.";
                 break;
             case 2: // ls
                 std::cout << "Listing directory" << std::endl;
 				listDirectory(); 
                 break;
             case 3: // create
+				create(commandArr[1]);
                 break;
             case 4: // cat
                 break;
@@ -69,9 +74,10 @@ int main(void) {
             case 10: // mv
                 break;
             case 11: // mkdir
+				mkdir(commandArr[1]); 
                 break;
             case 12: // cd
-
+				currentDir += changeDirectory(commandArr[1]); 
                 break;
             case 13: // pwd
                 break;
@@ -134,6 +140,8 @@ std::string help() {
     helpStr += "* help:                             Prints this help screen\n";
     return helpStr;
 }
+
+/* Insert code for your shell functions and call them from the switch-case */
 void format()
 {
 	fileSystem = new FileSystem(); 
@@ -149,4 +157,27 @@ void append()
 {
 
 }
-/* Insert code for your shell functions and call them from the switch-case */
+
+void create(std::string filePath)
+{
+	//filepath is in commandArr[1] which is passed through in filePath. 
+	//The last section of that string is the name, contain it somehow.
+	std::string fileContent = ""; 
+	std::cout << "Please enter content of file: " << std::endl; 
+	std::cin >> fileContent; 
+	//Create file here 
+}
+
+void mkdir(std::string filePath)
+{
+	//filepath is in commandArr[1] which is passed through in filePath. 
+	//The last section of that string is the name, contain it somehow.
+	
+	/*Call filesystem makedir here*/
+}
+std::string changeDirectory(std::string fileName)
+{
+	std::string currentFolderName =  fileSystem->goToFolder(fileName);
+	return currentFolderName;
+}
+
