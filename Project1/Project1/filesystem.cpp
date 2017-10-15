@@ -62,7 +62,22 @@ void FileSystem::append(std::string & appendInfo, int blockNr)
 	{
 		for (int i = 1; i < 511; i++)
 		{
-			blockInfo += tempBlock.getCharAt(i);
+			if (tempBlock.getCharAt(i) != ':')
+			{
+				blockInfo += tempBlock.getCharAt(i);
+			}
+			else
+			{
+				if (i < 510 && tempBlock.getCharAt(i + 1) != ':')
+				{
+					blockInfo += tempBlock.getCharAt(i);
+				}
+				else
+				{
+					i = 511;
+				}
+			}
+			
 		}
 		VHDD[continueBlock].reset(); 
 		continueBlock = tempBlock.getCharAt(511);
@@ -73,6 +88,7 @@ void FileSystem::append(std::string & appendInfo, int blockNr)
 		}
 	}
 	blockInfo += appendInfo;
+	VHDD.append(blockNr, blockInfo);
 }
 
 void FileSystem::format() 
@@ -89,25 +105,25 @@ void FileSystem::createFile(const std::string& strName, std::string& writeString
 	if (blockNr != -1)
 	{
 		std::string fileInfo = strName + ":" + std::to_string(blockNr);
-		//Append created blockinfo to current Block (Directory).
+		append(fileInfo, currentBlock);
 	}
 }
 
 void FileSystem::createFolder(const std::string &strName)
 {
-	int blockNr = 0; 
-	blockNr = this->VHDD.createDirectory(); 
+	int blockNr = this->VHDD.createDirectory(); 
 	if (blockNr != -1)
 	{
 		std::string folderInfo = strName + ":" + std::to_string(blockNr); 
-		//Append created blockinfo to current Block (Directory).
+		append(folderInfo, currentBlock);
 	}
 }
 
 std::string FileSystem::goToFolder(std::string folderName)
 {
 	std::string tempName = ""; 
-	for (int i = 0; i < this->VHDD[currentBlock].size; i++)
+	std::string resultName = "/"; 
+	for (int i = 1; i < this->VHDD[currentBlock].size(); i++)
 	{
 		if (this->VHDD[currentBlock].getCharAt(i) != ':')
 		{
@@ -118,7 +134,7 @@ std::string FileSystem::goToFolder(std::string folderName)
 			if (tempName == folderName)
 			{
 				currentBlock = this->VHDD[currentBlock].getCharAt(i + 1); 
-				i == this->VHDD[currentBlock].size; 
+				i = this->VHDD[currentBlock].size(); 
 			}
 			else
 			{
@@ -127,7 +143,8 @@ std::string FileSystem::goToFolder(std::string folderName)
 			}
 		}
 	}
-	return tempName; 
+	resultName += tempName; 
+	return resultName; 
 }
 
 /* Please insert your code */
