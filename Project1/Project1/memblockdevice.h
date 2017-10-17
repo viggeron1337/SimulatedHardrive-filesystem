@@ -35,6 +35,7 @@ public:
     /* Return the size */
     int size() const;
 	int getNrOfDirectories() const;
+	void changeNrOfDirectoriesWith(int x);
 	void append(int appendedBlock, std::string &appendIfon);
 };
 

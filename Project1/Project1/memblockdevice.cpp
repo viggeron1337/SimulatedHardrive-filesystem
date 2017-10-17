@@ -184,6 +184,11 @@ int MemBlockDevice::getNrOfDirectories() const
 	return nrOfDirectories;
 }
 
+void MemBlockDevice::changeNrOfDirectoriesWith(int x)
+{
+	nrOfDirectories += x;
+}
+
 void MemBlockDevice::append(int appendedBlock, std::string &appendIfon)
 {
 	float nrOfBlocksF = (float)appendIfon.size() / 510;

@@ -21,6 +21,7 @@ private:
 	void removeFolder(char block);
 public:
     FileSystem();
+	FileSystem(std::string imageName);
     ~FileSystem();
 	void append(std::string& appendInfo, int blockNr = -1); 
     /* These API functions need to be implemented
@@ -54,6 +55,7 @@ public:
 
     /* Add your own member-functions if needed */
 	void createImage(std::string imageName);
+	void restoreImage(std::string imageName);
 };
 
 #endif // FILESYSTEM_H

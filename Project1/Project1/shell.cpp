@@ -73,10 +73,14 @@ int main(void) {
 				cat(commandArr[1]); 
                 break;
             case 5: // createImage
-
+				if (started == true)
+				{
+					createImage(commandArr[1]);
+				}
                 break;
             case 6: // restoreImage
 				started = true;
+				restoreImage(commandArr[1]);
                 break;
             case 7: // rm
 				if (started == true)
@@ -244,35 +248,14 @@ void rm(std::string name)
 
 void createImage(std::string imageName)
 {
+	if (imageName.size() <= 4 || imageName.substr(imageName.size() - 4, 4) != ".txt")
+	{
+		imageName += ".txt";
+	}
 	fileSystem->createImage(imageName);
 }
 
 void restoreImage(std::string imageName)
 {
-	fileSystem = new FileSystem();
-	std::string strBlock = "";
-	int intBlock;
-	std::string str;
-	std::ifstream infile;
-	if (imageName.substr(imageName.size() - 4, 4) != ".txt")
-	{
-		imageName += ".txt";
-	}
-	infile.open(imageName);
-
-	while (infile.eof() == false) // To get you all the lines.
-	{
-		std::getline(infile, strBlock); 
-		std::getline(infile, str);
-		intBlock = (int)strBlock.at(0);
-		if (str.at(0) == '1')
-		{
-			fileSystem->createFile(str, intBlock);
-		}
-		else if (str.at(0) == '2')
-		{
-			fileSystem->createFolder(str, intBlock);
-		}
-	}
-	infile.close();
+	fileSystem = new FileSystem(imageName);
 }

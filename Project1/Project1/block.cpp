@@ -71,6 +71,7 @@ int Block::getCharInUse() const
 }
 
 void Block::writeBlock(const std::string &strBlock,char blockType, char continueBlock)  {
+	this->nrOfElementsInUse = 0;
 	this->info[0] = blockType;
 	if (strBlock.size() > 510)
 	{
@@ -89,6 +90,7 @@ void Block::writeBlock(const std::string &strBlock) {
 	{
 		this->info[i] = strBlock[i];
 	}
+	this->nrOfElementsInUse = strBlock.size() - 1;
 }
 
 

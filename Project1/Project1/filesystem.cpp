@@ -5,6 +5,11 @@ FileSystem::FileSystem()
 	format();
 }
 
+FileSystem::FileSystem(std::string imageName)
+{
+	restoreImage(imageName);
+}
+
 FileSystem::~FileSystem()
 {
 }
@@ -146,7 +151,7 @@ void FileSystem::createFile(const std::string& strName, std::string& writeString
 
 void FileSystem::createFile(std::string& writeString, int blockNr)
 {
-
+	VHDD.writeFile(writeString, blockNr);
 }
 
 void FileSystem::createFolder(const std::string &strName)
@@ -157,6 +162,11 @@ void FileSystem::createFolder(const std::string &strName)
 		std::string folderInfo = strName + ":" + std::to_string(blockNr); 
 		append(folderInfo, currentBlock);
 	}
+}
+
+void FileSystem::createFolder(std::string& content, int blockNr)
+{
+	VHDD.createDirectory(content, blockNr);
 }
 
 int FileSystem::goToFolder(std::string folderName, std::string& resultName)
@@ -199,20 +209,66 @@ int FileSystem::goToFolder(std::string folderName, std::string& resultName)
 	return found;
 }
 
-void FileSystem::createFolder(std::string& content, int blockNr)
-{
-
-}
-
 void FileSystem::createImage(std::string imageName)
 {
 	int nrOfBlocks = VHDD.getNrOfDirectories();
 	int addedBlocks = 0;
-	std::ofstream infile;
+	std::ofstream outfile;
+	outfile.open(imageName);
+	std::string content;
+	outfile << nrOfBlocks << std::endl;
 	for (int i = 0; i < VHDD.size() && addedBlocks < nrOfBlocks; i++)
 	{
-
+		if (this->VHDD[i].getCharAt(0) != '0')
+		{
+			content = "";
+			if (this->VHDD[i].getCharInUse() == 0)
+			{
+				content += this->VHDD[i].getCharAt(0);
+			}
+			else
+			{
+				for (int k = 0; k < this->VHDD[i].getCharInUse() + 1; k++)
+				{
+					content += this->VHDD[i].getCharAt(k);
+				}
+			}
+			outfile << i << std::endl << content << std::endl;
+		}
 	}
+	outfile.close();
+}
+void FileSystem::restoreImage(std::string imageName)
+{
+	VHDD = MemBlockDevice();
+	currentBlock = 0;
+	std::string strBlock = "";
+	int intBlock;
+	int nrOfBlocks;
+	std::string str;
+	std::ifstream infile;
+	if (imageName.size() <= 4 || imageName.substr(imageName.size() - 4, 4) != ".txt")
+	{
+		imageName += ".txt";
+	}
+	infile.open(imageName);
+	infile >> nrOfBlocks;
+	infile.ignore();
+	for (int i = 0; i < nrOfBlocks; i++)
+	{
+		std::getline(infile, strBlock);
+		std::getline(infile, str);
+		intBlock = atoi(&strBlock.at(0));
+		if (str.at(0) == '1')
+		{
+			createFile(str, intBlock);
+		}
+		else if (str.at(0) == '2')
+		{
+			createFolder(str, intBlock);
+		}
+	}
+	infile.close();
 }
 
 void FileSystem::remove(std::string name)
@@ -232,7 +288,7 @@ void FileSystem::remove(std::string name)
 			if (tempName == name)
 			{
 				block = this->VHDD[currentBlock].getCharAt(i + 1);
-				char type = this->VHDD[block].getCharAt(0);
+				char type = this->VHDD[atoi(&block)].getCharAt(0);
 				if (type == '1')
 				{
 					removeFile(block);
@@ -270,6 +326,7 @@ void FileSystem::removeFile(char block)
 	{
 		VHDD[blocks.at(i)].reset();
 	}
+	VHDD.changeNrOfDirectoriesWith((blocks.size() * -1));
 }
 
 void FileSystem::removeFolder(char block)
