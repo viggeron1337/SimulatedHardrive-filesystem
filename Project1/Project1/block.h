@@ -38,8 +38,7 @@ public:
 
     /* Write a block */
     void writeBlock(const std::string &strBlock,char blockType, char continueBlock = ':');
-    int writeBlock(const std::vector<char> &vec);
-    void writeBlock(const char cArr[]);     // Use with caution! Make sure that cArr is at least as large as private member block.
+    void writeBlock(const std::string &strBlock);
 
     std::string toString() const;
 };

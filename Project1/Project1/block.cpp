@@ -84,25 +84,13 @@ void Block::writeBlock(const std::string &strBlock,char blockType, char continue
 	this->info[511] = continueBlock;
 }
 
-int Block::writeBlock(const std::vector<char> &vec) {
-    int output = -2; // Assume not the same dimension
-    if (vec.size() == (unsigned long)this->nrOfElements) {
-        for (unsigned long int i = 0; i < vec.size(); ++i) {
-           this->info[i] = vec[i];
-        }
-        output = 1;
-    }
-//    else {
-//        throw std::out_of_range("vector and block not the same dimension");
-//    }
-    return output;
+void Block::writeBlock(const std::string &strBlock) {
+	for (int i = 0; i < strBlock.size(); i++)
+	{
+		this->info[i] = strBlock[i];
+	}
 }
 
-void Block::writeBlock(const char cArr[]) {
-    for (int i = 0; i < this->nrOfElements; ++i) {
-        this->info[i] = cArr[i];
-    }
-}
 
 std::string Block::toString() const {
     std::string output;

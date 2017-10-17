@@ -2,6 +2,9 @@
 #define FILESYSTEM_H
 
 #include "memblockdevice.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 class FileSystem
 {
@@ -10,7 +13,12 @@ private:
 	int currentBlock;
 	
 	void format();
-    // Here you can add your own data structures
+
+	/* Removes a file in the filesystem */
+	void removeFile(char block);
+
+	/* Removes a folder in the filesystem */
+	void removeFolder(char block);
 public:
     FileSystem();
     ~FileSystem();
@@ -22,16 +30,15 @@ public:
     /* This function creates a file in the filesystem */
     // createFile(...)
 	void createFile(const std::string& strName, std::string& writeString);
+	void createFile(std::string& writeString, int BlockNr);
 
     /* Creates a folder in the filesystem */
     // createFolder(...);
 	void createFolder(const std::string &strName); 
+	void createFolder(std::string& content, int BlockNr);
 
-    /* Removes a file in the filesystem */
-    // removeFile(...);
-
-    /* Removes a folder in the filesystem */
-    // removeFolder(...);
+    /* Removes a file/folder in the filesystem */
+	void remove(std::string name);
 
     /* Function will move the current location to a specified location in the filesystem */
     // goToFolder(...);
@@ -46,6 +53,7 @@ public:
 	std::string cat(std::string filePath); 
 
     /* Add your own member-functions if needed */
+	void createImage(std::string imageName);
 };
 
 #endif // FILESYSTEM_H

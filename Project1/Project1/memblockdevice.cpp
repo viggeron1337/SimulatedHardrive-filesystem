@@ -61,14 +61,15 @@ int MemBlockDevice::writeFile(const std::string &strBlock) {
 		}
 	}
 	//Makes sure that we add the data if there was blocks to support it. 
-	if (nrOfBlocksI == 1)
+	if (foundBlocks == nrOfBlocksI)
 	{
-		this->memBlocks[blockNeededArray[0]].writeBlock(strBlock, '1');
-		blockNr = blockNeededArray[0];
-	}
-	else
-	{
-		if (foundBlocks == nrOfBlocksI)
+		nrOfDirectories += foundBlocks;
+		if (nrOfBlocksI == 1)
+		{
+			this->memBlocks[blockNeededArray[0]].writeBlock(strBlock, '1');
+			blockNr = blockNeededArray[0];
+		}
+		else
 		{
 			blockNr = blockNeededArray[0];
 			for (int i = 0; i < nrOfBlocksI - 1; i++)
@@ -77,11 +78,18 @@ int MemBlockDevice::writeFile(const std::string &strBlock) {
 				size -= 510;
 			}
 			//This makes sure that the last char is : (standard value) for the last block. 
+
 			this->memBlocks[blockNeededArray[nrOfBlocksI]].writeBlock(strBlock.substr(510 * nrOfBlocksI, size), '1'); 
 		}
 	}
 	delete[] blockNeededArray; 
     return blockNr;
+}
+
+void MemBlockDevice::writeFile(const std::string & strBlock, int blockNr)
+{
+	nrOfDirectories++;
+	this->memBlocks[blockNr].writeBlock(strBlock);
 }
 
 int MemBlockDevice::createDirectory()
@@ -93,9 +101,16 @@ int MemBlockDevice::createDirectory()
 		{
 			this->memBlocks[i].writeBlock("", '2');
 			emptyPos = i; 
+			nrOfDirectories++;
 		}
 	}
 	return emptyPos; 
+}
+
+void MemBlockDevice::createDirectory(const std::string & strBlock, int blockNr)
+{
+	nrOfDirectories++;
+	this->memBlocks[blockNr].writeBlock(strBlock);
 }
 
 void MemBlockDevice::appendDirectory(std::string &appendIfon, int appendedBlock)
@@ -141,6 +156,7 @@ void MemBlockDevice::appendDirectory(std::string &appendIfon, int appendedBlock)
 	}
 	delete[] blockNeededArray;
 }
+
 Block MemBlockDevice::readBlock(int blockNr) const {
 	if (blockNr < 0 || blockNr >= this->nrOfBlocks)
 	{
@@ -161,6 +177,11 @@ void MemBlockDevice::reset() {
 
 int MemBlockDevice::size() const {
     return this->nrOfBlocks;
+}
+
+int MemBlockDevice::getNrOfDirectories() const
+{
+	return nrOfDirectories;
 }
 
 void MemBlockDevice::append(int appendedBlock, std::string &appendIfon)

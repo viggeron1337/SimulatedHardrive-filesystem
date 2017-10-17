@@ -22,10 +22,10 @@ public:
 
     /* Writes a file */
 	int writeFile(const std::string &strBlock);
-
+	void writeFile(const std::string &strBlock, int blockNr);
 	/* Writes a directory */
 	int createDirectory(); 
-
+	void createDirectory(const std::string &strBlock, int blockNr);
     /* Reads a block */
     Block readBlock(int blockNr) const;
 
@@ -34,7 +34,7 @@ public:
 
     /* Return the size */
     int size() const;
-
+	int getNrOfDirectories() const;
 	void append(int appendedBlock, std::string &appendIfon);
 };
 
