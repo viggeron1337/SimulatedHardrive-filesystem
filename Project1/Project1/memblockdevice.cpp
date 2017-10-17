@@ -74,10 +74,10 @@ int MemBlockDevice::writeFile(const std::string &strBlock) {
 			for (int i = 0; i < nrOfBlocksI - 1; i++)
 			{
 				this->memBlocks[blockNeededArray[i]].writeBlock(strBlock.substr(510 * i, 510), '1', blockNeededArray[i + 1]);
-				size - 510;
+				size -= 510;
 			}
 			//This makes sure that the last char is : (standard value) for the last block. 
-			this->memBlocks[blockNeededArray[nrOfBlocksI]].writeBlock(strBlock.substr(510 * nrOfBlocksI, size), '1'); //fixa
+			this->memBlocks[blockNeededArray[nrOfBlocksI]].writeBlock(strBlock.substr(510 * nrOfBlocksI, size), '1'); 
 		}
 	}
 	delete[] blockNeededArray; 
@@ -133,7 +133,7 @@ void MemBlockDevice::appendDirectory(std::string &appendIfon, int appendedBlock)
 			for (int i = 0; i < nrOfBlocksI - 1; i++)
 			{
 				this->memBlocks[blockNeededArray[i]].writeBlock(appendIfon.substr(510 * i, 510), '2', blockNeededArray[i + 1]);
-				size - 510;
+				size -= 510;
 			}
 			//This makes sure that the last char is : (standard value) for the last block. 
 			this->memBlocks[blockNeededArray[nrOfBlocksI]].writeBlock(appendIfon.substr(510 * nrOfBlocksI, size), '2');

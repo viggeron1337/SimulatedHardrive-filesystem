@@ -65,12 +65,23 @@ char Block::getCharAt(int pos)
 	return this->info[pos];
 }
 
-void Block::writeBlock(const std::string &strBlock,char blockType, char continueBlock) {
+int Block::getCharInUse() const
+{
+	return this->nrOfElementsInUse; 
+}
+
+void Block::writeBlock(const std::string &strBlock,char blockType, char continueBlock)  {
 	this->info[0] = blockType;
-       for (int i = 0; i < strBlock.size(); i++) {
-            this->info[i + 1] = strBlock[i];
-        }
-	   this->info[511] = continueBlock;
+	if (strBlock.size() > 510)
+	{
+		throw "Error: strBlock too large."; 
+	}
+	for (int i = 0; i < strBlock.size(); i++)
+	{
+		this->info[i + 1] = strBlock[i];
+		this->nrOfElementsInUse++; 
+	}
+	this->info[511] = continueBlock;
 }
 
 int Block::writeBlock(const std::vector<char> &vec) {

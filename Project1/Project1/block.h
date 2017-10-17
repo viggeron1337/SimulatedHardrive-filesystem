@@ -9,7 +9,8 @@ class Block
 {
 private:
     char *info;
-    int nrOfElements;
+	int nrOfElements; 
+	int nrOfElementsInUse = 0; 
 
 public:
     /* Constructor */
@@ -33,6 +34,7 @@ public:
     int size() const;   // returns the size
     Block readBlock() const;    // Returns a copy of block
 	char getCharAt(int pos); 
+	int getCharInUse() const; 
 
     /* Write a block */
     void writeBlock(const std::string &strBlock,char blockType, char continueBlock = ':');

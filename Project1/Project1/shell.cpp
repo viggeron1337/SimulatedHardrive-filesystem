@@ -21,8 +21,9 @@ void listDirectory();
 void append();
 void create(std::string filePath); 
 void mkdir(std::string filePath); 
-std::string changeDirectory(std::string fileName); 
+int changeDirectory(std::string fileName, std::string& currentFolderName); 
 void pwd(const std::vector<std::string>& pwdVector); 
+void cat(std::string filePath); 
 /* More functions ... */
 
 int main(void) {
@@ -32,6 +33,7 @@ int main(void) {
 	std::string currentDir = "/";    // current directory, used for output
 	std::string filePath = ""; 
 	std::vector<std::string> pwdVetor; 
+	std::string currentFolderName = "";
 
     bool bRun = true;
 
@@ -60,6 +62,7 @@ int main(void) {
 				create(commandArr[1]);
                 break;
             case 4: // cat
+				cat(commandArr[1]); 
                 break;
             case 5: // createImage
                 break;
@@ -78,8 +81,16 @@ int main(void) {
 				mkdir(commandArr[1]); 
                 break;
             case 12: // cd
-				pwdVetor.push_back(changeDirectory(commandArr[1]));
-				currentDir += pwdVetor.front(); 
+				if (changeDirectory(commandArr[1], currentFolderName) != -1)
+				{
+					pwdVetor.push_back(currentFolderName); 
+					currentDir += pwdVetor.back();
+				}
+				else
+				{
+					std::cout << "Error: folder does not exist." << std::endl; 
+				}
+				 
                 break;
             case 13: // pwd
 				pwd(pwdVetor); 
@@ -166,10 +177,9 @@ void create(std::string filePath)
 	//filepath is in commandArr[1] which is passed through in filePath. 
 	//The last section of that string is the name, contain it somehow.
 	std::string fileContent = ""; 
-	std::string name = "testFile";
+	std::string name = filePath; 
 	std::cout << "Please enter content of file: " << std::endl; 
-	std::cin >> fileContent; 
-	std::cin.ignore();
+	std::getline(std::cin, fileContent); 
 	//Create file here 
 	fileSystem->createFile(name, fileContent);
 }
@@ -178,16 +188,15 @@ void mkdir(std::string filePath)
 {
 	//filepath is in commandArr[1] which is passed through in filePath. 
 	//The last section of that string is the name, contain it somehow.
-	std::string name = "testfolder";
+	std::string name = filePath; 
 
 	/*Call filesystem makedir here*/
 	//get Name
 	fileSystem->createFolder(name);
 }
-std::string changeDirectory(std::string fileName)
+int changeDirectory(std::string fileName, std::string& currentFolderName)
 {
-	std::string currentFolderName =  fileSystem->goToFolder(fileName);
-	return currentFolderName;
+	return fileSystem->goToFolder(fileName, currentFolderName);
 }
 void pwd(const std::vector<std::string>& pwdVector) 
 {
@@ -196,4 +205,9 @@ void pwd(const std::vector<std::string>& pwdVector)
 		std::cout << pwdVector.at(i); 
 	}
 	std::cout << std::endl; 
+}
+void cat(std::string filePath)
+{
+	std::string fileContent = fileSystem->cat(filePath);
+	std::cout << fileContent; 
 }

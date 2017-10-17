@@ -47,6 +47,41 @@ std::string  FileSystem::listDirectory()
 	return cleanBlockInfo; 
 }
 
+std::string FileSystem::cat(std::string fileName)
+{
+	std::string tempName = ""; 
+	char blockNr; 
+	std::string fileContent = ""; 
+
+	for (int i = 1; i < this->VHDD[currentBlock].size(); i++)
+	{
+		if (this->VHDD[currentBlock].getCharAt(i) != ':')
+		{
+			tempName += this->VHDD[currentBlock].getCharAt(i);
+		}
+		else
+		{
+			if (tempName == fileName)
+			{
+				blockNr = this->VHDD[currentBlock].getCharAt(i + 1); 
+				i = 50000; 
+			}
+			else
+			{
+				tempName.clear();
+				i++;
+			}
+		}
+	}
+	int blockNrI = atoi(&blockNr); 
+	for (int i = 1; i <= this->VHDD[blockNrI].getCharInUse(); i++)
+	{
+		fileContent += this->VHDD[blockNrI].getCharAt(i); 
+	}
+	fileContent += "\n";
+	return fileContent; 
+}
+
 void FileSystem::append(std::string & appendInfo, int blockNr)
 {
 	if (blockNr == -1)
@@ -119,10 +154,13 @@ void FileSystem::createFolder(const std::string &strName)
 	}
 }
 
-std::string FileSystem::goToFolder(std::string folderName)
+int FileSystem::goToFolder(std::string folderName, std::string& resultName)
 {
+	//Fix so that cd can see maps if they are in another block than the current. 
+	int found = -1; 
+	std::string blockContent = ""; 
 	std::string tempName = ""; 
-	std::string resultName = "/"; 
+	resultName = "/";
 	for (int i = 1; i < this->VHDD[currentBlock].size(); i++)
 	{
 		if (this->VHDD[currentBlock].getCharAt(i) != ':')
@@ -131,10 +169,11 @@ std::string FileSystem::goToFolder(std::string folderName)
 		}
 		else
 		{
-			if (tempName == folderName)
+			if (tempName == folderName && this->VHDD[this->VHDD[currentBlock].getCharAt(i + 1)].getCharAt(0) == '2')
 			{
-				currentBlock = this->VHDD[currentBlock].getCharAt(i + 1); 
-				i = this->VHDD[currentBlock].size(); 
+				currentBlock = this->VHDD[currentBlock].getCharAt(i + 1);
+				found = currentBlock;
+				i = this->VHDD[currentBlock].size();	
 			}
 			else
 			{
@@ -144,7 +183,7 @@ std::string FileSystem::goToFolder(std::string folderName)
 		}
 	}
 	resultName += tempName; 
-	return resultName; 
+	return found; 
 }
 
 /* Please insert your code */

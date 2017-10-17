@@ -14,7 +14,6 @@ private:
 public:
     FileSystem();
     ~FileSystem();
-	std::string listDirectory(); 
 	void append(std::string& appendInfo, int blockNr = -1); 
     /* These API functions need to be implemented
 	   You are free to specify parameter lists and return values
@@ -36,11 +35,15 @@ public:
 
     /* Function will move the current location to a specified location in the filesystem */
     // goToFolder(...);
-	std::string goToFolder(std::string folderName); 
+	int goToFolder(std::string folderName, std::string& resultName); 
 
     /* This function will get all the files and folders in the specified folder */
 
     // listDir(...);
+	std::string listDirectory();
+
+	/*Functon will return a string with the content of the specified file.*/
+	std::string cat(std::string filePath); 
 
     /* Add your own member-functions if needed */
 };
