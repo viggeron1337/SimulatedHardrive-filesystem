@@ -1,5 +1,3 @@
-#include <iostream>
-#include <sstream>
 #include "filesystem.h"
 
 const int MAXCOMMANDS = 8;
@@ -23,6 +21,10 @@ void create(std::string filePath);
 void mkdir(std::string filePath); 
 std::string changeDirectory(std::string fileName); 
 void pwd(const std::vector<std::string>& pwdVector); 
+
+void rm(std::string fileName);
+void createImage(std::string imageName);
+void restoreImage(std::string imageName);
 /* More functions ... */
 
 int main(void) {
@@ -32,7 +34,7 @@ int main(void) {
 	std::string currentDir = "/";    // current directory, used for output
 	std::string filePath = ""; 
 	std::vector<std::string> pwdVetor; 
-
+	bool started = false;
     bool bRun = true;
 
     do {
@@ -51,38 +53,63 @@ int main(void) {
             case 1: // format
 				format(); 
 				currentDir += ".";
+				started = true;
                 break;
             case 2: // ls
-                std::cout << "Listing directory" << std::endl;
-				listDirectory(); 
+				if (started == true)
+				{
+					std::cout << "Listing directory" << std::endl;
+					listDirectory();
+				}
                 break;
             case 3: // create
-				create(commandArr[1]);
+				if (started == true)
+				{
+					create(commandArr[1]);
+				}
                 break;
             case 4: // cat
                 break;
             case 5: // createImage
+
                 break;
             case 6: // restoreImage
+				started = true;
                 break;
             case 7: // rm
+				if (started == true)
+				{
+					rm(commandArr[1]);
+				}
                 break;
             case 8: // cp
                 break;
             case 9: // append
-				append(); 
+				if (started == true)
+				{
+					append();
+				}
                 break;
             case 10: // mv
                 break;
             case 11: // mkdir
-				mkdir(commandArr[1]); 
+				if (started == true)
+				{
+					mkdir(commandArr[1]);
+				}
                 break;
             case 12: // cd
-				pwdVetor.push_back(changeDirectory(commandArr[1]));
-				currentDir += pwdVetor.front(); 
+				if (started == true)
+				{
+					pwdVetor.push_back(changeDirectory(commandArr[1]));
+					currentDir += pwdVetor.front();
+				}
                 break;
             case 13: // pwd
-				pwd(pwdVetor); 
+				if (started == true)
+				{
+					pwd(pwdVetor);
+				}
                 break;
             case 14: // help
                 std::cout << help() << std::endl;
@@ -166,7 +193,7 @@ void create(std::string filePath)
 	//filepath is in commandArr[1] which is passed through in filePath. 
 	//The last section of that string is the name, contain it somehow.
 	std::string fileContent = ""; 
-	std::string name = "testFile";
+	std::string name = filePath;
 	std::cout << "Please enter content of file: " << std::endl; 
 	std::cin >> fileContent; 
 	std::cin.ignore();
@@ -178,7 +205,7 @@ void mkdir(std::string filePath)
 {
 	//filepath is in commandArr[1] which is passed through in filePath. 
 	//The last section of that string is the name, contain it somehow.
-	std::string name = "testfolder";
+	std::string name = filePath;
 
 	/*Call filesystem makedir here*/
 	//get Name
@@ -196,4 +223,44 @@ void pwd(const std::vector<std::string>& pwdVector)
 		std::cout << pwdVector.at(i); 
 	}
 	std::cout << std::endl; 
+}
+
+void rm(std::string name)
+{
+	fileSystem->remove(name);
+}
+
+void createImage(std::string imageName)
+{
+	fileSystem->createImage(imageName);
+}
+
+void restoreImage(std::string imageName)
+{
+	fileSystem = new FileSystem();
+	std::string strBlock = "";
+	int intBlock;
+	std::string str;
+	std::ifstream infile;
+	if (imageName.substr(imageName.size() - 4, 4) != ".txt")
+	{
+		imageName += ".txt";
+	}
+	infile.open(imageName);
+
+	while (infile.eof() == false) // To get you all the lines.
+	{
+		std::getline(infile, strBlock); 
+		std::getline(infile, str);
+		intBlock = (int)strBlock.at(0);
+		if (str.at(0) == '1')
+		{
+			fileSystem->createFile(str, intBlock);
+		}
+		else if (str.at(0) == '2')
+		{
+			fileSystem->createFolder(str, intBlock);
+		}
+	}
+	infile.close();
 }
