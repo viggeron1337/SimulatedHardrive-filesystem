@@ -50,7 +50,7 @@ public:
 	std::string listDirectory();
 
 	/*Functon will return a string with the content of the specified file.*/
-	std::string cat(std::string filePath); 
+	int cat(std::string filePath, std::string& fileContent); 
 
     /* Add your own member-functions if needed */
 	void createImage(std::string imageName);

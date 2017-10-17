@@ -21,8 +21,8 @@ void create(std::string filePath);
 void mkdir(std::string filePath); 
 int changeDirectory(std::string fileName, std::string& currentFolderName); 
 void pwd(const std::vector<std::string>& pwdVector); 
-void cat(std::string filePath); 
-void rm(std::string fileName);
+int cat(std::string filePath); 
+void rm(std::string filePath);
 void createImage(std::string imageName);
 void restoreImage(std::string imageName);
 /* More functions ... */
@@ -59,7 +59,8 @@ int main(void) {
             case 2: // ls
 				if (started == true)
 				{
-					std::cout << "Listing directory" << std::endl;
+					std::cout << "\n" << "Listing directory" << std::endl << std::endl; 
+					std::cout << "Name:		Type:" << std::endl << std::endl; 
 					listDirectory();
 				}
                 break;
@@ -70,7 +71,13 @@ int main(void) {
 				}
                 break;
             case 4: // cat
-				cat(commandArr[1]); 
+				if (started == true)
+				{
+					if (cat(commandArr[1]) == -1)
+					{
+						std::cout << "Error: File does not exist." << std::endl; 
+					}
+				}
                 break;
             case 5: // createImage
 
@@ -231,15 +238,21 @@ void pwd(const std::vector<std::string>& pwdVector)
 	std::cout << std::endl; 
 }
 
-void cat(std::string filePath)
+int cat(std::string filePath)
 {
-	std::string fileContent = fileSystem->cat(filePath);
-	std::cout << fileContent; 
+	int found = -1; 
+	std::string fileContent = ""; 
+	found = fileSystem->cat(filePath,fileContent);
+	if (found != -1)
+	{
+		std::cout << fileContent; 
+	}
+	return found; 
 }
 
-void rm(std::string name)
+void rm(std::string filePath)
 {
-	fileSystem->remove(name);
+	fileSystem->remove(filePath);
 }
 
 void createImage(std::string imageName)
