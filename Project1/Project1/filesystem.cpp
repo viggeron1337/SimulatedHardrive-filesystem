@@ -327,6 +327,7 @@ void FileSystem::remove(std::string name)
 				if (type == '1')
 				{
 					removeFile(block);
+					i = this->VHDD[currentBlock].size();
 				}
 				//Inte implementerad.
 				else if (type == '2')
@@ -335,8 +336,11 @@ void FileSystem::remove(std::string name)
 					//Eftersom removeFolder inte är ordentligt implementerad så har vi 
 					// denna check för att återställa block.
 					block = '-1'; 
+					tempName.clear();
+					i++;
 				}
-				i = this->VHDD[currentBlock].size();
+				//är inflytad i ifsatsen tills removeFolder är fixad
+				//i = this->VHDD[currentBlock].size();
 			}
 			else
 			{
@@ -348,20 +352,30 @@ void FileSystem::remove(std::string name)
 	if (block != '-1')
 	{
 		std::string tempName = ""; 
-		for (int i = 0; i < oldFolderContent.size(); i++)
+		newFolderContent = oldFolderContent.at(0);
+		for (int i = 1; i < oldFolderContent.size(); i++)
 		{
-			tempName += oldFolderContent.at(i); 
 			if (oldFolderContent.at(i) != ':')
 			{
 				tempName += oldFolderContent.at(i); 
 			}
 			else
 			{
-				if (tempName != name)
+				if (tempName == "")
+				{
+					i = oldFolderContent.size();
+				}
+				else if (tempName != name)
 				{
 					newFolderContent += tempName;
 					newFolderContent += ':';
 					newFolderContent += oldFolderContent.at(++i); 
+					tempName.clear();
+				}
+				else
+				{
+					tempName.clear();
+					i++;
 				}
 			}
 		}
@@ -411,5 +425,53 @@ void FileSystem::removeFile(char block)
 void FileSystem::removeFolder(char block)
 {
 
+}
+
+void FileSystem::cp(std::string originalName, std::string copysName)
+{
+	std::string tempName;
+	for (int i = 1; i < this->VHDD[currentBlock].size(); i++)
+	{
+		if (this->VHDD[currentBlock].getCharAt(i) != ':')
+		{
+			tempName += this->VHDD[currentBlock].getCharAt(i);
+		}
+		else
+		{
+
+			if (tempName == originalName)
+			{
+				char newBlock = this->VHDD[currentBlock].getCharAt(i + 1);
+				if (this->VHDD[atoi(&newBlock)].getCharAt(0) == '1')
+				{
+					char continueBlock = newBlock;
+					std::string content = "";
+					while (continueBlock != ':')
+					{
+						for (int i = 1; i <= this->VHDD[atoi(&newBlock)].getCharInUse(); i++)
+						{
+							content += this->VHDD[atoi(&continueBlock)].getCharAt(i);
+							if (i >= 2 && content.at(i - 1) == ':' && content.at(i - 2) == ':')
+							{
+								i = 511;
+							}
+						}
+						continueBlock = this->VHDD[atoi(&continueBlock)].getCharAt(511);
+					}
+					createFile(copysName, content);
+				}
+				else
+				{
+					tempName.clear();
+					i++;
+				}
+			}
+			else
+			{
+				tempName.clear();
+				i++;
+			}
+		}
+	}
 }
 /* Please insert your code */

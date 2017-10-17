@@ -25,6 +25,7 @@ int cat(std::string filePath);
 void rm(std::string filePath);
 void createImage(std::string imageName);
 void restoreImage(std::string imageName);
+void cp(std::string originalName, std::string copisName);
 /* More functions ... */
 
 int main(void) {
@@ -96,6 +97,10 @@ int main(void) {
 				}
                 break;
             case 8: // cp
+				if (started == true)
+				{
+					cp(commandArr[1], commandArr[2]);
+				}
                 break;
             case 9: // append
 				if (started == true)
@@ -271,4 +276,9 @@ void createImage(std::string imageName)
 void restoreImage(std::string imageName)
 {
 	fileSystem = new FileSystem(imageName);
+}
+
+void cp(std::string originalName, std::string copisName)
+{
+	fileSystem->cp(originalName, copisName);
 }

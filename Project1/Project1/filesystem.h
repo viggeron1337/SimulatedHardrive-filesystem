@@ -14,6 +14,8 @@ private:
 	
 	void format();
 
+	void restoreImage(std::string imageName);
+
 	/* Removes a file in the filesystem */
 	void removeFile(char block);
 
@@ -52,10 +54,10 @@ public:
 
 	/*Functon will return a string with the content of the specified file.*/
 	int cat(std::string filePath, std::string& fileContent); 
-
+	void cp(std::string originalName, std::string copisName);
     /* Add your own member-functions if needed */
 	void createImage(std::string imageName);
-	void restoreImage(std::string imageName);
+
 };
 
 #endif // FILESYSTEM_H
