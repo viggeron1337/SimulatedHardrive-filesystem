@@ -54,7 +54,8 @@ int main(void) {
                 break;
             case 1: // format
 				format(); 
-				currentDir += ".";
+				currentDir = "/.";
+				pwdVetor.clear();
 				started = true;
                 break;
             case 2: // ls
@@ -88,6 +89,8 @@ int main(void) {
                 break;
             case 6: // restoreImage
 				started = true;
+				currentDir = "/.";
+				pwdVetor.clear();
 				restoreImage(commandArr[1]);
                 break;
             case 7: // rm

@@ -10,7 +10,7 @@ class FileSystem
 {
 private:
     MemBlockDevice VHDD;
-	int currentBlock;
+	char currentBlock;
 	
 	void format();
 
@@ -25,7 +25,7 @@ public:
     FileSystem();
 	FileSystem(std::string imageName);
     ~FileSystem();
-	void append(std::string& appendInfo, int blockNr = -1); 
+	void append(std::string& appendInfo, char blockNr = '-1'); 
     /* These API functions need to be implemented
 	   You are free to specify parameter lists and return values
     */

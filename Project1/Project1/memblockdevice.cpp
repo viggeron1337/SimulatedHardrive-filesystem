@@ -191,20 +191,11 @@ void MemBlockDevice::changeNrOfDirectoriesWith(int x)
 
 void MemBlockDevice::append(int appendedBlock, std::string &appendIfon)
 {
-	float nrOfBlocksF = (float)appendIfon.size() / 510;
-	int nrOfBlocksI = nrOfBlocksF;
-	if (nrOfBlocksF != nrOfBlocksI)
+	if (this->memBlocks[appendedBlock].getCharAt(0) == '2')
 	{
-		nrOfBlocksI++;
+		appendDirectory(appendIfon, appendedBlock);
 	}
-	int* blockNeededArray = new int[nrOfBlocksI];
-	blockNeededArray[0] = appendedBlock;
-	int nrOfBlock = 1;
-	for (int i = 0; i < nrOfBlocksI; i++)
+	else if (this->memBlocks[appendedBlock].getCharAt(0) == '1')
 	{
-		blockNeededArray[nrOfBlock] = this->memBlocks[i].getCharAt(511);
-		nrOfBlock++;
 	}
-	
-	appendDirectory(appendIfon, appendedBlock);
 }

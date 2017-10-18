@@ -17,7 +17,7 @@ FileSystem::~FileSystem()
 std::string  FileSystem::listDirectory()
 {
 	std::string blockInfo;
-	Block tempBlock = VHDD.readBlock(this->currentBlock);
+	Block tempBlock = VHDD.readBlock(atoi(&currentBlock));
 	char continueBlock = '0'; 
 	while (continueBlock != ':')
 	{
@@ -32,7 +32,7 @@ std::string  FileSystem::listDirectory()
 		continueBlock = tempBlock.getCharAt(511); 
 		if (continueBlock != ':')
 		{
-			tempBlock = VHDD.readBlock(continueBlock); 
+			tempBlock = VHDD.readBlock(atoi(&continueBlock));
 		}
 	}
 
@@ -74,22 +74,22 @@ int FileSystem::cat(std::string fileName, std::string& fileContent)
 	char blockNrC; 
 	int blockNrI = 0; 
 
-	for (int i = 1; i < this->VHDD[currentBlock].size(); i++)
+	for (int i = 1; i < this->VHDD[atoi(&currentBlock)].size(); i++)
 	{
-		if (this->VHDD[currentBlock].getCharAt(i) != ':')
+		if (this->VHDD[atoi(&currentBlock)].getCharAt(i) != ':')
 		{
-			tempName += this->VHDD[currentBlock].getCharAt(i);
+			tempName += this->VHDD[atoi(&currentBlock)].getCharAt(i);
 		}
 		else
 		{
 			if (tempName == fileName)
 			{
-				blockNrC = this->VHDD[currentBlock].getCharAt(i + 1); 
+				blockNrC = this->VHDD[atoi(&currentBlock)].getCharAt(i + 1);
 				blockNrI = atoi(&blockNrC); 
 				if (this->VHDD[blockNrI].getCharAt(0) == '1')
 				{
 					found = true; 
-					i = this->VHDD[currentBlock].size(); 
+					i = this->VHDD[atoi(&currentBlock)].size();
 				}
 				else
 				{
@@ -116,14 +116,14 @@ int FileSystem::cat(std::string fileName, std::string& fileContent)
 	return found; 
 }
 
-void FileSystem::append(std::string & appendInfo, int blockNr)
+void FileSystem::append(std::string & appendInfo, char blockNr)
 {
 	if (blockNr == -1)
 	{
 		blockNr = currentBlock;
 	}
-	char type = VHDD[blockNr].getCharAt(0); 
-	Block tempBlock = VHDD.readBlock(blockNr);
+	char type = VHDD[atoi(&blockNr)].getCharAt(0); 
+	Block tempBlock = VHDD.readBlock(atoi(&blockNr));
 	std::string blockInfo; 
 	char continueBlock = blockNr;
 
@@ -157,13 +157,13 @@ void FileSystem::append(std::string & appendInfo, int blockNr)
 		}
 	}
 	blockInfo += appendInfo;
-	VHDD.append(blockNr, blockInfo);
+	VHDD.append(atoi(&blockNr), blockInfo);
 }
 
 void FileSystem::format() 
 {
 	VHDD = MemBlockDevice();
-	currentBlock = 0;
+	currentBlock = '0';
 	VHDD.createDirectory(); 
 }
 
@@ -203,23 +203,23 @@ int FileSystem::goToFolder(std::string folderName, std::string& resultName)
 	int found = -1; 
 	std::string tempName = "";
 	resultName = "/";
-	for (int i = 1; i < this->VHDD[currentBlock].size(); i++)
+	for (int i = 1; i < this->VHDD[atoi(&currentBlock)].size(); i++)
 	{
-		if (this->VHDD[currentBlock].getCharAt(i) != ':')
+		if (this->VHDD[atoi(&currentBlock)].getCharAt(i) != ':')
 		{
-			tempName += this->VHDD[currentBlock].getCharAt(i);
+			tempName += this->VHDD[atoi(&currentBlock)].getCharAt(i);
 		}
 		else
 		{
 			
 			if (tempName == folderName)
 			{
-				char newBlock = this->VHDD[currentBlock].getCharAt(i + 1);
+				char newBlock = this->VHDD[atoi(&currentBlock)].getCharAt(i + 1);
 				if (this->VHDD[atoi(&newBlock)].getCharAt(0) == '2')
 				{
-					currentBlock = atoi(&newBlock);
-					found = currentBlock;
-					i = this->VHDD[currentBlock].size();
+					currentBlock = newBlock;
+					found = atoi(&currentBlock);
+					i = this->VHDD[atoi(&currentBlock)].size();
 				}
 				else
 				{
@@ -246,7 +246,7 @@ void FileSystem::createImage(std::string imageName)
 	outfile.open(imageName);
 	std::string content;
 	outfile << nrOfBlocks << std::endl;
-	for (int i = 0; i < VHDD.size() && addedBlocks < nrOfBlocks; i++)
+	for (int i = 0; addedBlocks < nrOfBlocks; i++)
 	{
 		if (this->VHDD[i].getCharAt(0) != '0')
 		{
@@ -270,7 +270,7 @@ void FileSystem::createImage(std::string imageName)
 void FileSystem::restoreImage(std::string imageName)
 {
 	VHDD = MemBlockDevice();
-	currentBlock = 0;
+	currentBlock = '0';
 	std::string strBlock = "";
 	int intBlock;
 	int nrOfBlocks;
@@ -307,32 +307,32 @@ void FileSystem::remove(std::string name)
 	std::string newFolderContent;
 	char block = '-1'; 
 
-	for (int i = 0; i < this->VHDD[currentBlock].size(); i++)
+	for (int i = 0; i < this->VHDD[atoi(&currentBlock)].size(); i++)
 	{
-		oldFolderContent += this->VHDD[currentBlock].getCharAt(i); 
+		oldFolderContent += this->VHDD[atoi(&currentBlock)].getCharAt(i);
 	}
 
 	for (int i = 1; i < oldFolderContent.size(); i++)
 	{
 		if (oldFolderContent.at(i) != ':')
 		{
-			tempName += this->VHDD[currentBlock].getCharAt(i);
+			tempName += this->VHDD[atoi(&currentBlock)].getCharAt(i);
 		}
 		else
 		{
 			if (tempName == name)
 			{
-				block = this->VHDD[currentBlock].getCharAt(i + 1);
+				block = this->VHDD[atoi(&currentBlock)].getCharAt(i + 1);
 				char type = this->VHDD[atoi(&block)].getCharAt(0);
 				if (type == '1')
 				{
 					removeFile(block);
-					i = this->VHDD[currentBlock].size();
+					i = this->VHDD[atoi(&currentBlock)].size();
 				}
 				//Inte implementerad.
 				else if (type == '2')
 				{
-					removeFolder(block);
+					//removeFolder(block);
 					//Eftersom removeFolder inte är ordentligt implementerad så har vi 
 					// denna check för att återställa block.
 					block = '-1'; 
@@ -340,7 +340,7 @@ void FileSystem::remove(std::string name)
 					i++;
 				}
 				//är inflytad i ifsatsen tills removeFolder är fixad
-				//i = this->VHDD[currentBlock].size();
+				//i = this->VHDD[atoi(&currentBlock)].size();
 			}
 			else
 			{
@@ -374,14 +374,27 @@ void FileSystem::remove(std::string name)
 				}
 				else
 				{
-					tempName.clear();
-					i++;
+					block = this->VHDD[atoi(&currentBlock)].getCharAt(i + 1);
+					char type = this->VHDD[atoi(&block)].getCharAt(0);
+					if (type == '1')
+					{
+						tempName.clear();
+						i++;
+					}
+					else if(type == '2')
+					{
+						newFolderContent += tempName;
+						newFolderContent += ':';
+						newFolderContent += oldFolderContent.at(++i);
+						tempName.clear();
+					}
+					
 				}
 			}
 		}
 		std::vector<int> blocks;
-		blocks.push_back(currentBlock);
-		char continueBlock = (char)currentBlock; 
+		blocks.push_back(atoi(&currentBlock));
+		char continueBlock = currentBlock; 
 
 		while (continueBlock != ':')
 		{
@@ -430,18 +443,18 @@ void FileSystem::removeFolder(char block)
 void FileSystem::cp(std::string originalName, std::string copysName)
 {
 	std::string tempName;
-	for (int i = 1; i < this->VHDD[currentBlock].size(); i++)
+	for (int i = 1; i < this->VHDD[atoi(&currentBlock)].size(); i++)
 	{
-		if (this->VHDD[currentBlock].getCharAt(i) != ':')
+		if (this->VHDD[atoi(&currentBlock)].getCharAt(i) != ':')
 		{
-			tempName += this->VHDD[currentBlock].getCharAt(i);
+			tempName += this->VHDD[atoi(&currentBlock)].getCharAt(i);
 		}
 		else
 		{
 
 			if (tempName == originalName)
 			{
-				char newBlock = this->VHDD[currentBlock].getCharAt(i + 1);
+				char newBlock = this->VHDD[atoi(&currentBlock)].getCharAt(i + 1);
 				if (this->VHDD[atoi(&newBlock)].getCharAt(0) == '1')
 				{
 					char continueBlock = newBlock;
