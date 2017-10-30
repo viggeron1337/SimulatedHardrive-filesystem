@@ -30,6 +30,8 @@ void cp(std::string originalName, std::string copisName);
 
 int main(void) {
 
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	std::string userCommand, commandArr[MAXCOMMANDS];
 	std::string user = "user@DV1492";    // Change this if you want another user to be displayed
 	std::string currentDir = "/";    // current directory, used for output
@@ -122,10 +124,16 @@ int main(void) {
             case 12: // cd
 				if (started == true)
 				{
-					if (changeDirectory(commandArr[1], currentFolderName) != -1)
+					int resultOfCd = changeDirectory(commandArr[1], currentFolderName);
+	
+					if (resultOfCd > 0)
 					{
 						pwdVetor.push_back(currentFolderName);
 						currentDir += pwdVetor.back();
+					}
+					else if(resultOfCd == 0)
+					{
+						currentDir = "/."; 
 					}
 					else
 					{
@@ -174,6 +182,7 @@ int findCommand(std::string &command) {
 
 bool quit() {
 	std::cout << "Exiting\n";
+	delete fileSystem; 
 	return false;
 }
 

@@ -23,6 +23,7 @@ private:
 	void removeFolder(char block);
 public:
     FileSystem();
+	//This constructor calls on RestoreImage()
 	FileSystem(std::string imageName);
     ~FileSystem();
 	void append(std::string& appendInfo, char blockNr = '-1'); 
@@ -57,7 +58,6 @@ public:
 	void cp(std::string originalName, std::string copisName);
     /* Add your own member-functions if needed */
 	void createImage(std::string imageName);
-
 };
 
 #endif // FILESYSTEM_H

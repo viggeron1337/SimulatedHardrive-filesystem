@@ -88,7 +88,7 @@ int FileSystem::cat(std::string fileName, std::string& fileContent)
 				blockNrI = atoi(&blockNrC); 
 				if (this->VHDD[blockNrI].getCharAt(0) == '1')
 				{
-					found = true; 
+					found = 1; 
 					i = this->VHDD[atoi(&currentBlock)].size();
 				}
 				else
@@ -201,25 +201,39 @@ void FileSystem::createFolder(std::string& content, int blockNr)
 int FileSystem::goToFolder(std::string folderName, std::string& resultName)
 {
 	int found = -1; 
-	std::string tempName = "";
-	resultName = "/";
-	for (int i = 1; i < this->VHDD[atoi(&currentBlock)].size(); i++)
+	if (folderName == "/")
 	{
-		if (this->VHDD[atoi(&currentBlock)].getCharAt(i) != ':')
+		found = 0;
+		resultName = "/."; 
+		currentBlock = '0'; 
+	}
+	else
+	{
+		std::string tempName = "";
+		resultName = "/";
+		for (int i = 1; i < this->VHDD[atoi(&currentBlock)].size(); i++)
 		{
-			tempName += this->VHDD[atoi(&currentBlock)].getCharAt(i);
-		}
-		else
-		{
-			
-			if (tempName == folderName)
+			if (this->VHDD[atoi(&currentBlock)].getCharAt(i) != ':')
 			{
-				char newBlock = this->VHDD[atoi(&currentBlock)].getCharAt(i + 1);
-				if (this->VHDD[atoi(&newBlock)].getCharAt(0) == '2')
+				tempName += this->VHDD[atoi(&currentBlock)].getCharAt(i);
+			}
+			else
+			{
+
+				if (tempName == folderName)
 				{
-					currentBlock = newBlock;
-					found = atoi(&currentBlock);
-					i = this->VHDD[atoi(&currentBlock)].size();
+					char newBlock = this->VHDD[atoi(&currentBlock)].getCharAt(i + 1);
+					if (this->VHDD[atoi(&newBlock)].getCharAt(0) == '2')
+					{
+						currentBlock = newBlock;
+						found = atoi(&currentBlock);
+						i = this->VHDD[atoi(&currentBlock)].size();
+					}
+					else
+					{
+						tempName.clear();
+						i++;
+					}
 				}
 				else
 				{
@@ -227,14 +241,9 @@ int FileSystem::goToFolder(std::string folderName, std::string& resultName)
 					i++;
 				}
 			}
-			else
-			{
-				tempName.clear();
-				i++;
-			}
 		}
+		resultName += tempName;
 	}
-	resultName += tempName;
 	return found;
 }
 
@@ -263,6 +272,7 @@ void FileSystem::createImage(std::string imageName)
 				}
 			}
 			outfile << i << std::endl << content << std::endl;
+			addedBlocks++;
 		}
 	}
 	outfile.close();
